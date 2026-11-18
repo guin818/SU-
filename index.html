@@ -116,6 +116,11 @@
   #gres .gsc-cursor-page{font-size:16px;padding:4px 8px}
   #gres table{border-collapse:collapse}
   #gres .gsc-search-box,#gres form.gsc-search-box,#gres .gsc-clear-button{display:none!important}
+  /* 구글 결과가 팝업(오버레이)으로 뜨지 않고 SU!!! 칸 안에 나오게 */
+  .gsc-results-wrapper-overlay{position:static!important;top:auto!important;left:auto!important;width:auto!important;height:auto!important;max-height:none!important;box-shadow:none!important;padding:0!important;margin:0!important;background:transparent!important;border-radius:0!important;opacity:1!important;visibility:visible!important;display:block!important}
+  .gsc-modal-background-image,.gsc-results-close-btn{display:none!important}
+  body.gsc-overflow-hidden{overflow:auto!important}
+  .gsc-results-wrapper-nooverlay{padding:0!important}
   .warn{background:#fff3c4;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px;margin-bottom:14px}
 </style>
 </head>
@@ -139,19 +144,6 @@
   <section id="result" class="box">
     <h2 class="q-title" id="qTitle"></h2>
     <div id="gres"><div class="thinking" id="loading"><span class="dots"><span></span><span></span><span></span></span>슉! 찾는 중...</div></div>
-
-    <div class="section">
-      <div class="label">다른 곳에서도 찾아보기</div>
-      <div class="links" id="links"></div>
-    </div>
-  </section>
-
-  <section class="recent box">
-    <div class="head">
-      <div class="label">최근 검색</div>
-      <button class="wipe" id="wipe" type="button">전체 지우기</button>
-    </div>
-    <div class="chips" id="chips"></div>
   </section>
 </div>
 
@@ -173,8 +165,8 @@
     set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
   };
   var $=function(id){return document.getElementById(id)};
-  var q=$('q'),go=$('go'),clearBtn=$('clear'),qTitle=$('qTitle'),links=$('links'),chips=$('chips');
-  var recent=store.get('su_recent',[]); if(!Array.isArray(recent)) recent=[];
+  var q=$('q'),go=$('go'),clearBtn=$('clear'),qTitle=$('qTitle');
+  
 
   // 구글 맞춤 검색: 결과 칸만 쓰고, 검색창은 SU!!! 것을 사용
   var gReady=false, pending=null, cseLoaded=false, lastStamp=0;
@@ -199,28 +191,6 @@
     if(el) el.execute(text);
   }
 
-  function renderLinks(text){
-    var e=encodeURIComponent(text); links.innerHTML='';
-    ENGINES.forEach(function(g){
-      var a=document.createElement('a');
-      a.className='lnk';a.href=g.url(e);a.target='_blank';a.rel='noopener';
-      a.innerHTML='<span class="ic">'+g.ic+'</span>'+g.name;
-      links.appendChild(a);
-    });
-  }
-  function remember(text){
-    recent=recent.filter(function(r){return r!==text});
-    recent.unshift(text);recent=recent.slice(0,12);
-    store.set('su_recent',recent);renderRecent();
-  }
-  function renderRecent(){
-    chips.innerHTML='';
-    if(!recent.length){var p=document.createElement('div');p.className='empty';p.textContent='아직 검색한 게 없어요';chips.appendChild(p);return}
-    recent.forEach(function(r){
-      var c=document.createElement('button');c.type='button';c.className='chip';c.textContent=r;
-      c.addEventListener('click',function(){search(r)});chips.appendChild(c);
-    });
-  }
   function ensureBox(){
     if(!$('gcse-box')){ $('gres').innerHTML='<div id="gcse-box"></div>'; }
   }
@@ -229,7 +199,6 @@
     q.value=text; update();
     document.body.classList.add('has-result');
     qTitle.textContent='“'+text+'”';
-    renderLinks(text); remember(text);
     if(gReady) ensureBox();
     [].slice.call(document.querySelectorAll('#gres .warn')).forEach(function(n){n.remove()});
     if(!/^https?:$/.test(location.protocol)){
@@ -243,7 +212,7 @@
       var box=$('gres');
       if(!box.querySelector('.gsc-webResult, .gs-no-results-result, .gsc-result')){
         var w=document.createElement('div'); w.className='warn';
-        w.innerHTML='결과가 안 보이면 구글 맞춤 검색 설정에서 <b>전체 웹 검색</b>이 켜져 있는지 확인해 주세요. 아래 구글 버튼으로도 찾을 수 있어요!';
+        w.innerHTML='결과가 안 보이면 구글 검색엔진의 <b>검색할 사이트</b> 목록이 저장됐는지 확인해 주세요.';
         box.insertBefore(w, box.firstChild);
       }
     },7000);
@@ -262,14 +231,14 @@
   q.addEventListener('input',update);
   clearBtn.addEventListener('click',function(){q.value='';update();q.focus()});
   $('f').addEventListener('submit',function(ev){ev.preventDefault();q.blur();search(q.value)});
-  $('wipe').addEventListener('click',function(){recent=[];store.set('su_recent',recent);renderRecent()});
   $('logo').addEventListener('click',function(){
     document.body.classList.remove('has-result');q.value='';update();
     try{history.replaceState(null,'',location.pathname)}catch(e){}
     q.focus();
   });
 
-  renderRecent();update();
+  update();
+  try{localStorage.removeItem('su_recent')}catch(e){}
   // 페이지가 뜬 뒤 구글 검색 도구를 미리 불러와 둠
   if(/^https?:$/.test(location.protocol) && 'requestIdleCallback' in window) requestIdleCallback(loadCse,{timeout:1500}); else if(/^https?:$/.test(location.protocol)) setTimeout(loadCse,300);
   // 주소에 ?q=검색어 가 있으면 바로 검색
