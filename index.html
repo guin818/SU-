@@ -121,6 +121,12 @@
   .gsc-modal-background-image,.gsc-results-close-btn{display:none!important}
   body.gsc-overflow-hidden{overflow:auto!important}
   .gsc-results-wrapper-nooverlay{padding:0!important}
+  .qrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
+  .qrow .q-title{margin:0;min-width:0;overflow-wrap:anywhere}
+  .share{flex:none;font:inherit;font-size:15px;font-weight:800;padding:8px 14px;border:2.5px solid var(--ink);border-radius:999px;background:var(--sky);color:var(--ink);box-shadow:2px 2px 0 var(--ink);cursor:pointer}
+  .share:active{transform:translate(2px,2px);box-shadow:none}
+  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:15px;opacity:0;pointer-events:none;transition:all .25s;z-index:9999}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   .credit{text-align:right;font-size:13px;opacity:.7;margin:14px 0 0}
   .credit a{color:inherit}
   .warn{background:#fff3c4;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px;margin-bottom:14px}
@@ -144,7 +150,8 @@
   </main>
 
   <section id="result" class="box">
-    <h2 class="q-title" id="qTitle"></h2>
+    <div class="qrow"><h2 class="q-title" id="qTitle"></h2><button type="button" class="share" id="share">공유</button></div>
+    <div class="toast" id="toast"></div>
     <div id="gres"><div class="thinking" id="loading"><span class="dots"><span></span><span></span><span></span></span>슉! 찾는 중...</div></div>
     <p class="credit">검색 결과 제공: <a href="https://www.google.com" target="_blank" rel="noopener">Google</a></p>
   </section>
@@ -153,7 +160,7 @@
 
 <script>
 (function(){
-  var CX = '249de187d7c7f4e95';
+  var CX = 'a1f300dad56544691';
   var ENGINES = [
     {name:'구글',ic:'🔎',url:function(q){return 'https://www.google.com/search?q='+q}},
     {name:'네이버',ic:'🟢',url:function(q){return 'https://search.naver.com/search.naver?query='+q}},
@@ -220,7 +227,7 @@
         box.insertBefore(w, box.firstChild);
       }
     },7000);
-    try{history.replaceState(null,'','?q='+encodeURIComponent(text))}catch(e){}
+    try{history.replaceState(null,'','?q='+encodeURIComponent(text)+(location.hash||'#gsc.tab=0'))}catch(e){}
     window.scrollTo({top:0,behavior:'smooth'});
   }
   function update(){
@@ -241,8 +248,33 @@
     q.focus();
   });
 
+  function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show')},1800);}
+  function shareUrl(){
+    var u=location.href;
+    if(location.hash.indexOf('#gsc')!==0) u=location.origin+location.pathname+location.search+'#gsc.tab=0';
+    return u;
+  }
+  $('share').addEventListener('click',function(){
+    var url=shareUrl();
+    if(navigator.share){
+      navigator.share({url:url}).catch(function(){});
+      return;
+    }
+    var done=function(){toast('링크를 복사했어요!')};
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(done,function(){fallback(url)});
+    } else fallback(url);
+    function fallback(v){
+      var ta=document.createElement('textarea');ta.value=v;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      try{document.execCommand('copy');done()}catch(e){toast('복사가 안 됐어요. 주소창 링크를 복사해 주세요')}
+      ta.remove();
+    }
+  });
+
   update();
   try{localStorage.removeItem('su_recent')}catch(e){}
+
   // 페이지가 뜬 뒤 구글 검색 도구를 미리 불러와 둠
   if(/^https?:$/.test(location.protocol) && 'requestIdleCallback' in window) requestIdleCallback(loadCse,{timeout:1500}); else if(/^https?:$/.test(location.protocol)) setTimeout(loadCse,300);
   // 주소에 ?q=검색어 가 있으면 바로 검색
