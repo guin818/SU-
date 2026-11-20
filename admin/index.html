@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<title>SU!!! 관리자</title>
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&text=SU!&display=swap" rel="stylesheet">
+<style>
+  :root{--bg:#fff6e5;--ink:#1b1b1f;--pop:#ff4d2e;--sun:#ffd23f;--sky:#3ec6ff;--mint:#3ddc97;--card:#fff;--line:#e3ddd2}
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg);background-image:radial-gradient(var(--ink) 1px,transparent 1.2px);background-size:22px 22px;
+    color:var(--ink);font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    padding:clamp(16px,4vw,32px) clamp(12px,3vw,24px) 56px;
+  }
+  .wrap{max-width:1120px;margin:0 auto}
+
+  /* 머리 */
+  .top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+  .title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .logo{font-family:"Black Han Sans",system-ui,sans-serif;font-weight:900;font-size:clamp(32px,8vw,44px);color:var(--pop);-webkit-text-stroke:2px var(--ink);text-shadow:3px 3px 0 var(--ink);line-height:1}
+  .title h1{margin:0;font-size:clamp(20px,5vw,26px)}
+  .badge{font-size:12px;background:var(--ink);color:#fff;padding:4px 10px;border-radius:999px;white-space:nowrap}
+  .nav{display:flex;gap:6px;flex-wrap:wrap}
+  .nav a{font-size:14px;font-weight:700;text-decoration:none;color:var(--ink);background:#fff;border:2px solid var(--ink);border-radius:999px;padding:6px 12px}
+  .nav a:hover{background:var(--sun)}
+
+  /* 카드 */
+  .box{background:var(--card);border:3px solid var(--ink);border-radius:20px;box-shadow:4px 4px 0 var(--ink);padding:clamp(14px,3vw,20px);margin-bottom:22px;scroll-margin-top:12px}
+  h2{margin:0 0 6px;font-size:clamp(18px,4.5vw,21px)}
+  h3{margin:0 0 8px;font-size:16px}
+  .desc{margin:0 0 14px;font-size:14px;opacity:.75;line-height:1.6}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:stretch}
+  input,select{font:inherit;font-size:16px;padding:10px 12px;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);min-width:0}
+  input{flex:1 1 180px}
+  .btn{font:inherit;font-size:15px;font-weight:800;padding:10px 16px;border:2.5px solid var(--ink);border-radius:12px;background:var(--sun);color:var(--ink);cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;box-shadow:2px 2px 0 var(--ink);white-space:nowrap}
+  .btn.blue{background:var(--sky)}
+  .btn:active{transform:translate(2px,2px);box-shadow:none}
+  .note{font-size:13px;opacity:.7;margin:10px 0 0;line-height:1.6}
+  .err{background:#ffe1dc;border:2px solid var(--ink);border-radius:12px;padding:10px 12px;font-size:14px}
+
+  /* ① 화면 미리보기 */
+  .tabs{display:none;gap:6px;margin-bottom:12px}
+  .tabs button{flex:1;font:inherit;font-size:14px;font-weight:800;padding:9px 6px;border:2.5px solid var(--ink);border-radius:12px;background:#fff;color:var(--ink);cursor:pointer}
+  .tabs button[aria-selected="true"]{background:var(--sun)}
+  .phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .phone .cap{font-weight:800;font-size:14px;margin:0 0 8px}
+  .phone iframe{width:100%;height:clamp(520px,70vh,700px);border:3px solid var(--ink);border-radius:24px;background:#fff;display:block}
+  .phone .open{font-size:13px;margin-top:6px;display:inline-block;color:var(--ink)}
+  @media (max-width:520px){
+    #pf .btn{flex:1 1 40%}
+  }
+  @media (max-width:900px){
+    .tabs{display:flex}
+    .phones{grid-template-columns:1fr}
+    .phone{display:none;max-width:420px;margin:0 auto;width:100%}
+    .phone.on{display:block}
+    .phone .cap{display:none}
+  }
+
+  /* ② 공유 카드 */
+  .share-grid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:18px;align-items:start}
+  @media (max-width:760px){.share-grid{grid-template-columns:1fr}}
+  .chat{background:#b2c7d9;border-radius:16px;padding:16px}
+  .kcard{background:#fff;border-radius:12px;overflow:hidden;width:min(260px,100%);box-shadow:0 1px 2px rgba(0,0,0,.15)}
+  .kcard img{width:100%;aspect-ratio:1200/630;object-fit:cover;display:block;background:#eee}
+  .kcard .t{padding:10px 12px 2px;font-weight:700;font-size:15px}
+  .kcard .d{padding:0 12px;font-size:13px;color:#555}
+  .kcard .u{padding:6px 12px 10px;font-size:12px;color:#999}
+  .meta{font-size:13px;border-collapse:collapse;width:100%;table-layout:fixed}
+  .meta td{border-top:1px dashed #ccc;padding:7px 4px;vertical-align:top;overflow-wrap:anywhere}
+  .meta td:first-child{font-weight:700;width:110px}
+  .ok{color:#139a5a;font-weight:800}.no{color:var(--pop);font-weight:800}
+
+  /* ③ 검색 기록 */
+  .nums{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:16px}
+  .num{border:2.5px solid var(--ink);border-radius:14px;padding:12px 6px;text-align:center;background:#fffdf7}
+  .num b{display:block;font-size:clamp(22px,6vw,30px)}
+  .num span{font-size:13px;opacity:.7}
+  .cols{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media (max-width:760px){.cols{grid-template-columns:1fr}}
+  .list{list-style:none;margin:0;padding:0;font-size:15px}
+  .list li{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:8px 2px;border-bottom:1px dashed #ccc}
+  .list .w{flex:1;min-width:0;overflow-wrap:anywhere}
+  .list .c{flex:none;opacity:.7;font-size:13px;padding-top:2px}
+  .bar{height:6px;background:var(--sun);border-radius:3px;margin-top:4px}
+  .steps{margin:0;padding-left:20px;line-height:1.8;font-size:15px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="title"><span class="logo">SU!!!</span><h1>관리자</h1><span class="badge">비밀 주소 · 공유 금지</span></div>
+    <nav class="nav"><a href="#preview">① 화면</a><a href="#sharecard">② 공유</a><a href="#stats">③ 기록</a></nav>
+  </div>
+
+  <!-- ① 화면 미리보기 -->
+  <section class="box" id="preview">
+    <h2>① 화면 미리보기</h2>
+    <p class="desc">검색하지 않아도 SU!!! 첫 화면과 검색 결과 화면을 바로 볼 수 있어요. 여기서 보는 검색은 기록에 남지 않아요.</p>
+    <form class="row" id="pf">
+      <input id="pq" value="나무위키" aria-label="예시 검색어">
+      <button class="btn" type="submit">미리보기 바꾸기</button>
+      <button class="btn blue" type="button" id="reload">새로고침</button>
+    </form>
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" data-i="0" aria-selected="true">첫 화면</button>
+      <button type="button" role="tab" data-i="1" aria-selected="false">웹 결과</button>
+      <button type="button" role="tab" data-i="2" aria-selected="false">이미지 결과</button>
+    </div>
+    <div class="phones">
+      <div class="phone on"><p class="cap">첫 화면</p><iframe id="f0" title="첫 화면"></iframe><a class="open" id="o0" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
+      <div class="phone"><p class="cap">검색 결과 (웹)</p><iframe id="f1" title="웹 결과"></iframe><a class="open" id="o1" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
+      <div class="phone"><p class="cap">검색 결과 (이미지)</p><iframe id="f2" title="이미지 결과"></iframe><a class="open" id="o2" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
+    </div>
+  </section>
+
+  <!-- ② 공유 링크 미리보기 -->
+  <section class="box" id="sharecard">
+    <h2>② 공유 링크 미리보기</h2>
+    <p class="desc">카카오톡 같은 곳에 SU!!! 링크를 보내면 대략 이런 카드가 떠요. 실제 SU!!! 페이지에 들어 있는 정보를 읽어서 보여 줘요.</p>
+    <div class="share-grid">
+      <div class="chat"><div class="kcard">
+        <img id="kimg" alt="공유 이미지">
+        <div class="t" id="kt">불러오는 중...</div>
+        <div class="d" id="kd"></div>
+        <div class="u" id="ku"></div>
+      </div></div>
+      <div>
+        <table class="meta" id="meta"></table>
+        <p class="note">카카오톡은 한 번 본 링크의 카드를 한동안 저장해 둬요. 그림이나 문구를 바꿨는데 예전 카드가 뜨면, 공유 디버거에서 su.ggm.kr을 넣고 캐시를 초기화해 주세요.</p>
+        <div class="row" style="margin:12px 0 0"><a class="btn blue" href="https://developers.kakao.com/tool/debugger/sharing" target="_blank" rel="noopener">카카오 공유 디버거 ↗</a></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ 검색 기록 -->
+  <section class="box" id="stats">
+    <h2>③ 사람들이 검색한 기록</h2>
+    <p class="desc">SU!!!에서 검색할 때마다 검색어와 시간이 저장돼요. 누가 검색했는지는 저장하지 않아요.</p>
+    <form class="row" id="kf">
+      <select id="days" aria-label="기간">
+        <option value="1">오늘</option><option value="7" selected>최근 7일</option><option value="30">최근 30일</option><option value="365">최근 1년</option>
+      </select>
+      <button class="btn" type="submit">새로고침</button>
+    </form>
+    <div id="stat">불러오는 중...</div>
+  </section>
+</div>
+
+<script>
+(function(){
+  var LOG_URL = 'https://su-log.gim135587.workers.dev';
+  var $=function(id){return document.getElementById(id)};
+  var base=location.origin+'/';
+  if(!/^https?:$/.test(location.protocol)){
+    document.querySelector('.wrap').insertAdjacentHTML('afterbegin','<div class="err" style="margin-bottom:18px">지금은 저장된 파일로 열어서 미리보기와 기록이 안 보여요. su.ggm.kr에 올린 뒤 <b>https://su.ggm.kr/admin-74aq8p8xlq.html</b> 주소로 열어 주세요.</div>');
+    return;
+  }
+  function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+
+  // ① 화면 미리보기 (좁은 화면에서는 탭으로 하나씩)
+  var loaded=[false,false,false], urls=[];
+  function setUrls(q){
+    var e=encodeURIComponent(q);
+    urls=[base, base+'?q='+e+'#gsc.tab=0', base+'?q='+e+'#gsc.tab=1'];
+    loaded=[false,false,false];
+    urls.forEach(function(u,i){ $('o'+i).href=u; });
+    showFrames();
+  }
+  function narrow(){ return window.matchMedia('(max-width:900px)').matches; }
+  function load(i){ if(!loaded[i]){ $('f'+i).src=urls[i]; loaded[i]=true; } }
+  function showFrames(){
+    if(narrow()){ var on=document.querySelector('.tabs [aria-selected="true"]'); load(+on.dataset.i); }
+    else { load(0); load(1); load(2); }
+  }
+  [].forEach.call(document.querySelectorAll('.tabs button'),function(b){
+    b.addEventListener('click',function(){
+      var i=+b.dataset.i;
+      [].forEach.call(document.querySelectorAll('.tabs button'),function(x){x.setAttribute('aria-selected',x===b?'true':'false')});
+      [].forEach.call(document.querySelectorAll('.phone'),function(p,j){p.classList.toggle('on',j===i)});
+      load(i);
+    });
+  });
+  window.addEventListener('resize',showFrames);
+  $('pf').addEventListener('submit',function(ev){ev.preventDefault(); setUrls($('pq').value.trim()||'나무위키');});
+  $('reload').addEventListener('click',function(){ loaded=[false,false,false]; [0,1,2].forEach(function(i){$('f'+i).src='about:blank'}); setTimeout(showFrames,50); });
+  setUrls('나무위키');
+
+  // ② 공유 카드
+  fetch(base,{cache:'no-store'}).then(function(r){return r.text()}).then(function(html){
+    var doc=new DOMParser().parseFromString(html,'text/html');
+    function m(p){var el=doc.querySelector('meta[property="'+p+'"]')||doc.querySelector('meta[name="'+p+'"]');return el?el.getAttribute('content'):''}
+    var title=m('og:title')||doc.title, desc=m('og:description')||m('description'), img=m('og:image'), url=m('og:url')||base;
+    $('kt').textContent=title||'(제목 없음)';
+    $('kd').textContent=desc||'';
+    try{$('ku').textContent=new URL(url).host}catch(e){$('ku').textContent=location.host}
+    if(img){$('kimg').src=img}else{$('kimg').style.display='none'}
+    $('meta').innerHTML=[['제목',title],['설명',desc],['그림',img],['주소',url]].map(function(r){
+      return '<tr><td>'+r[0]+'</td><td>'+(r[1]?'<span class="ok">✓</span> '+esc(r[1]):'<span class="no">없음</span>')+'</td></tr>';
+    }).join('');
+    $('kimg').onerror=function(){ $('meta').insertAdjacentHTML('beforeend','<tr><td>그림</td><td><span class="no">og.png를 못 불러왔어요. 도메인에 올렸는지 확인해 주세요.</span></td></tr>'); };
+  }).catch(function(){
+    $('kt').textContent='SU!!! 정보를 못 불러왔어요';
+    $('kd').textContent='이 파일을 su.ggm.kr에 올려서 열어 주세요.';
+  });
+
+  // ③ 검색 기록
+  function when(t){
+    var d=new Date(String(t).replace(' ','T')+'Z'); if(isNaN(d)) return esc(t);
+    return d.toLocaleString('ko-KR',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'});
+  }
+  function loadStats(){
+    var stat=$('stat');
+    stat.textContent='불러오는 중...';
+    fetch(LOG_URL.replace(/\/$/,'')+'/stats?days='+$('days').value)
+      .then(function(r){return r.json().then(function(j){return {s:r.status,j:j}})})
+      .then(function(x){
+        if(x.s===403){stat.innerHTML='<div class="err">이 페이지를 https://su.ggm.kr 주소로 열어 주세요.</div>';return}
+        if(!x.j.ok){stat.innerHTML='<div class="err">오류: '+esc(x.j.error)+'</div>';return}
+        var d=x.j, t=d.totals||{}, max=(d.top[0]&&+d.top[0].n)||1;
+        var label={1:'오늘',7:'최근 7일',30:'최근 30일',365:'최근 1년'}[d.days]||d.days+'일';
+        stat.innerHTML=
+          '<div class="nums">'+
+            '<div class="num"><b>'+(+t.today||0)+'</b><span>24시간</span></div>'+
+            '<div class="num"><b>'+(+t.period||0)+'</b><span>'+label+'</span></div>'+
+            '<div class="num"><b>'+(+t.all_time||0)+'</b><span>전체</span></div>'+
+          '</div>'+
+          '<div class="cols">'+
+            '<div><h3>인기 검색어 · '+label+'</h3><ul class="list">'+
+              (d.top.length?d.top.map(function(r,i){
+                return '<li><div class="w">'+(i+1)+'. '+esc(r.q)+'<div class="bar" style="width:'+Math.max(4,Math.round(+r.n/max*100))+'%"></div></div><span class="c">'+esc(r.n)+'번</span></li>';
+              }).join(''):'<li>아직 기록이 없어요</li>')+
+            '</ul></div>'+
+            '<div><h3>최근 검색 50개</h3><ul class="list">'+
+              (d.recent.length?d.recent.map(function(r){
+                return '<li><span class="w">'+esc(r.q)+(r.tab==='image'?' 🖼️':'')+'</span><span class="c">'+when(r.created_at)+'</span></li>';
+              }).join(''):'<li>아직 기록이 없어요</li>')+
+            '</ul></div>'+
+          '</div>';
+      })
+      .catch(function(){stat.innerHTML='<div class="err">기록 서버에 연결하지 못했어요.</div>'});
+  }
+  $('kf').addEventListener('submit',function(ev){ev.preventDefault();loadStats()});
+  $('days').addEventListener('change',loadStats);
+  loadStats();
+})();
+</script>
+</body>
+</html>
