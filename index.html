@@ -4,6 +4,17 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>SU!!!</title>
+<meta name="description" content="궁금한 건 뭐든지, 한 번에 슉!">
+<meta name="theme-color" content="#fff6e5">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SU!!!">
+<meta property="og:title" content="SU!!!">
+<meta property="og:description" content="궁금한 건 뭐든지, 한 번에 슉!">
+<meta property="og:image" content="https://su.ggm.kr/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:url" content="https://su.ggm.kr/">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preconnect" href="https://cse.google.com">
@@ -11,125 +22,114 @@
 <style>
   :root{
     --bg:#fff6e5; --ink:#1b1b1f; --pop:#ff4d2e; --sun:#ffd23f;
-    --sky:#3ec6ff; --mint:#3ddc97; --card:#ffffff; --shadow:4px 4px 0 var(--ink);
+    --sky:#3ec6ff; --mint:#3ddc97; --card:#fff; --line:#e3ddd2;
   }
   *{box-sizing:border-box}
   html,body{margin:0;min-height:100%}
   body{
     background:var(--bg);
-    background-image:radial-gradient(var(--ink) 1px, transparent 1.2px);
-    background-size:22px 22px; 
-    color:var(--ink); font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
-    display:flex; justify-content:center; padding:40px 18px 60px;
+    background-image:radial-gradient(var(--ink) 1px,transparent 1.2px);
+    background-size:22px 22px;
+    color:var(--ink);
+    font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic","Noto Sans KR",sans-serif;
+    padding:clamp(24px,6vw,48px) 16px 48px;
   }
-  .wrap{width:100%;max-width:680px}
-  header{text-align:center;margin-bottom:24px;transition:margin .3s}
+  .wrap{max-width:680px;margin:0 auto}
+
+  /* 로고 */
+  header{text-align:center;margin-bottom:22px}
   .logo{
-    font-family:"Black Han Sans",sans-serif;
-    font-size:clamp(84px,24vw,148px); line-height:.9; margin:0; letter-spacing:-2px;
-    color:var(--pop); -webkit-text-stroke:3px var(--ink); text-shadow:6px 6px 0 var(--ink);
-    display:inline-block; transform:rotate(-3deg); user-select:none; cursor:pointer;
-    transition:font-size .3s;
+    font-family:"Black Han Sans",system-ui,sans-serif;font-weight:900;
+    font-size:clamp(84px,24vw,148px);line-height:.9;margin:0;letter-spacing:-2px;
+    color:var(--pop);-webkit-text-stroke:3px var(--ink);text-shadow:6px 6px 0 var(--ink);
+    display:inline-block;transform:rotate(-3deg);user-select:none;cursor:pointer;
+    transition:font-size .25s;
   }
-  body.has-result .logo{font-size:clamp(56px,14vw,84px);text-shadow:4px 4px 0 var(--ink)}
-  body.has-result .tag{display:none}
-  .logo span{display:inline-block;color:var(--sun);animation:hop 1.6s ease-in-out infinite}
-  .logo span:nth-child(2){animation-delay:.15s;color:var(--sky)}
-  .logo span:nth-child(3){animation-delay:.3s;color:var(--mint)}
+  .logo span{display:inline-block;animation:hop 1.6s ease-in-out infinite}
+  .logo span:nth-child(1){color:var(--sun)}
+  .logo span:nth-child(2){color:var(--sky);animation-delay:.15s}
+  .logo span:nth-child(3){color:var(--mint);animation-delay:.3s}
   @keyframes hop{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-14px) rotate(6deg)}}
   @media (prefers-reduced-motion:reduce){.logo span{animation:none}}
   .tag{margin:14px 0 0;font-size:17px}
+  body.searching .logo{font-size:clamp(52px,13vw,80px);text-shadow:4px 4px 0 var(--ink)}
+  body.searching .tag{display:none}
 
-  .box{background:var(--card);border:3px solid var(--ink);border-radius:22px;box-shadow:var(--shadow);padding:18px}
-  .row{display:flex;gap:10px;align-items:stretch}
+  /* 카드 */
+  .box{background:var(--card);border:3px solid var(--ink);border-radius:22px;box-shadow:4px 4px 0 var(--ink);padding:16px}
+
+  /* 검색창 */
+  form{display:flex;gap:10px}
   .field{position:relative;flex:1;min-width:0}
-  input[type=search]{
-    width:100%; font:inherit; font-size:19px; padding:15px 44px 15px 16px;
-    border:3px solid var(--ink); border-radius:14px; outline:none; background:#fffdf7;
-    -webkit-appearance:none; appearance:none; color:var(--ink);
+  #q{
+    width:100%;font:inherit;font-size:19px;color:var(--ink);
+    padding:15px 44px 15px 16px;border:3px solid var(--ink);border-radius:14px;
+    background:#fffdf7;outline:none;-webkit-appearance:none;appearance:none;
   }
-  input[type=search]::-webkit-search-cancel-button{display:none}
-  input[type=search]:focus{background:#fff;box-shadow:0 0 0 4px var(--sun)}
-  .clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:30px;height:30px;border-radius:50%;border:none;background:#eee;font-size:16px;cursor:pointer;display:none;color:var(--ink)}
-  .clear.show{display:block}
-  .go{
-    font-family:"Black Han Sans",system-ui,sans-serif; font-weight:900; font-size:21px; padding:0 22px;
-    background:var(--pop); color:#fff; border:3px solid var(--ink); border-radius:14px;
-    box-shadow:3px 3px 0 var(--ink); cursor:pointer; white-space:nowrap;
-    transition:transform .08s, box-shadow .08s;
+  #q::-webkit-search-cancel-button{display:none}
+  #q:focus{background:#fff;box-shadow:0 0 0 4px var(--sun)}
+  #clear{
+    position:absolute;right:8px;top:50%;transform:translateY(-50%);
+    width:30px;height:30px;border-radius:50%;border:none;background:#eee;
+    font-size:16px;color:var(--ink);cursor:pointer;display:none;
   }
-  .go:active{transform:translate(3px,3px);box-shadow:0 0 0 var(--ink)}
-  .go:disabled{background:#bbb;cursor:default}
-
-  .label{font-weight:800;font-size:15px;margin:0 0 10px;letter-spacing:.5px}
+  #clear.show{display:block}
+  #go{
+    font-family:"Black Han Sans",system-ui,sans-serif;font-weight:900;font-size:21px;
+    padding:0 22px;background:var(--pop);color:#fff;border:3px solid var(--ink);border-radius:14px;
+    box-shadow:3px 3px 0 var(--ink);cursor:pointer;white-space:nowrap;
+  }
+  #go:active{transform:translate(3px,3px);box-shadow:none}
+  #go:disabled{background:#bbb;cursor:default}
 
   /* 결과 */
-  #result{margin-top:22px;display:none}
-  body.has-result #result{display:block}
-  .q-title{font-weight:800;font-size:22px;margin:0 0 12px;word-break:keep-all}
-  .answer{font-size:17px;line-height:1.75;word-break:keep-all}
-  .answer p{margin:0 0 12px}
-  .answer ul{margin:0 0 12px;padding-left:22px}
-  .answer li{margin-bottom:6px}
-  .answer h3{font-weight:800;font-size:17px;margin:16px 0 8px}
-  .answer strong{background:linear-gradient(transparent 55%, var(--sun) 55%)}
-  .answer .summary{font-size:19px;font-weight:700;background:#fff3c4;border:2px dashed var(--ink);border-radius:14px;padding:12px 14px;margin-bottom:14px}
-  .thinking{display:flex;align-items:center;gap:10px;font-size:17px}
-  .dots span{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--pop);margin-right:4px;animation:bounce 1s infinite}
+  #result{display:none;margin-top:22px}
+  body.searching #result{display:block}
+  .qrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
+  #qTitle{margin:0;font-size:22px;font-weight:800;min-width:0;overflow-wrap:anywhere;word-break:keep-all}
+  #share{
+    flex:none;font:inherit;font-size:15px;font-weight:800;padding:8px 14px;
+    border:2.5px solid var(--ink);border-radius:999px;background:var(--sky);color:var(--ink);
+    box-shadow:2px 2px 0 var(--ink);cursor:pointer;
+  }
+  #share:active{transform:translate(2px,2px);box-shadow:none}
+  .loading{display:flex;align-items:center;gap:10px;font-size:17px;padding:8px 0}
+  .dots span{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;animation:bounce 1s infinite}
+  .dots span:nth-child(1){background:var(--pop)}
   .dots span:nth-child(2){background:var(--sky);animation-delay:.15s}
   .dots span:nth-child(3){background:var(--mint);animation-delay:.3s}
   @keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
-  .err{background:#ffe1dc;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px}
-  .note{font-size:13px;opacity:.65;margin-top:6px}
-
-  .section{margin-top:18px;padding-top:16px;border-top:2px dashed #ccc}
-  .chips{display:flex;flex-wrap:wrap;gap:8px}
-  .chip{
-    font:inherit;font-size:15px;padding:8px 12px;border-radius:999px;
-    border:2px solid var(--ink);background:var(--card);cursor:pointer;color:var(--ink);
-    max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;text-decoration:none;
+  .warn{background:#fff3c4;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px;line-height:1.6;margin:6px 0 12px}
+  .credit{text-align:right;font-size:13px;opacity:.7;margin:14px 0 0}
+  .credit a{color:inherit}
+  .toast{
+    position:fixed;left:50%;bottom:28px;transform:translate(-50%,20px);
+    background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:15px;
+    opacity:0;pointer-events:none;transition:all .25s;z-index:9999;
   }
-  .chip:hover{background:var(--sky)}
-  .chip.rel{background:#eafaf2}
-  .chip.rel:hover{background:var(--mint)}
-  .links{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-  .lnk{
-    font-size:13px;font-weight:700;padding:10px 2px;white-space:nowrap;word-break:keep-all;letter-spacing:-.3px;border:2.5px solid var(--ink);border-radius:12px;
-    background:#fff;color:var(--ink);text-decoration:none;display:flex;flex-direction:column;align-items:center;gap:3px;
-  }
-  .lnk .ic{font-size:20px;line-height:1}
-  .lnk:hover{background:var(--sun)}
+  .toast.show{opacity:1;transform:translate(-50%,0)}
 
-  .recent{margin-top:22px}
-  .head{display:flex;justify-content:space-between;align-items:center}
-  .wipe{font:inherit;font-size:13px;background:none;border:none;text-decoration:underline;cursor:pointer;color:var(--ink);opacity:.7}
-  .empty{font-size:14px;opacity:.6}
-  .hint{text-align:center;font-size:13px;opacity:.65;margin-top:26px;line-height:1.6}
-
-  /* 구글 결과 영역 다듬기 */
-  #gres{min-height:40px}
+  /* 구글 결과 모양 다듬기 */
   #gres .gsc-control-cse{padding:0;border:none;background:transparent;font-family:inherit}
+  #gres .gsc-search-box,#gres form.gsc-search-box,#gres .gsc-clear-button{display:none!important}
   #gres .gsc-result-info,#gres .gsc-orderby-label{font-size:13px}
-  #gres .gs-title, #gres .gs-title *{font-size:17px!important;text-decoration:none!important}
-  #gres .gsc-webResult.gsc-result{border:none;border-bottom:1.5px dashed #ddd;padding:12px 0;background:transparent}
+  #gres .gs-title,#gres .gs-title *{font-size:17px!important;text-decoration:none!important}
+  #gres .gsc-webResult.gsc-result{border:none;border-bottom:1.5px dashed var(--line);padding:12px 0;background:transparent}
   #gres .gs-snippet{font-size:15px;line-height:1.6;color:#333}
   #gres .gsc-cursor-page{font-size:16px;padding:4px 8px}
   #gres table{border-collapse:collapse}
-  #gres .gsc-search-box,#gres form.gsc-search-box,#gres .gsc-clear-button{display:none!important}
-  /* 구글 결과가 팝업(오버레이)으로 뜨지 않고 SU!!! 칸 안에 나오게 */
+  /* 결과가 팝업(오버레이)으로 뜨지 않고 칸 안에 나오게 */
   .gsc-results-wrapper-overlay{position:static!important;top:auto!important;left:auto!important;width:auto!important;height:auto!important;max-height:none!important;box-shadow:none!important;padding:0!important;margin:0!important;background:transparent!important;border-radius:0!important;opacity:1!important;visibility:visible!important;display:block!important}
   .gsc-modal-background-image,.gsc-results-close-btn{display:none!important}
   body.gsc-overflow-hidden{overflow:auto!important}
-  .gsc-results-wrapper-nooverlay{padding:0!important}
-  .qrow{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:12px}
-  .qrow .q-title{margin:0;min-width:0;overflow-wrap:anywhere}
-  .share{flex:none;font:inherit;font-size:15px;font-weight:800;padding:8px 14px;border:2.5px solid var(--ink);border-radius:999px;background:var(--sky);color:var(--ink);box-shadow:2px 2px 0 var(--ink);cursor:pointer}
-  .share:active{transform:translate(2px,2px);box-shadow:none}
-  .toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:10px 16px;border-radius:999px;font-size:15px;opacity:0;pointer-events:none;transition:all .25s;z-index:9999}
-  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-  .credit{text-align:right;font-size:13px;opacity:.7;margin:14px 0 0}
-  .credit a{color:inherit}
-  .warn{background:#fff3c4;border:2px solid var(--ink);border-radius:12px;padding:12px 14px;font-size:15px;margin-bottom:14px}
+
+  @media (max-width:420px){
+    body{padding-left:12px;padding-right:12px}
+    .box{padding:14px;border-radius:18px}
+    #go{padding:0 16px;font-size:19px}
+    #q{font-size:17px}
+    #qTitle{font-size:19px}
+  }
 </style>
 </head>
 <body>
@@ -140,145 +140,171 @@
   </header>
 
   <main class="box">
-    <form id="f" class="row" autocomplete="off">
+    <form id="f" autocomplete="off" role="search">
       <div class="field">
         <input id="q" type="search" placeholder="뭐가 궁금해?" aria-label="검색어" enterkeyhint="search">
-        <button type="button" class="clear" id="clear" aria-label="지우기">✕</button>
+        <button type="button" id="clear" aria-label="지우기">✕</button>
       </div>
-      <button id="go" class="go" type="submit" disabled>SU!</button>
+      <button id="go" type="submit" disabled>SU!</button>
     </form>
   </main>
 
-  <section id="result" class="box">
-    <div class="qrow"><h2 class="q-title" id="qTitle"></h2><button type="button" class="share" id="share">공유</button></div>
-    <div class="toast" id="toast"></div>
-    <div id="gres"><div class="thinking" id="loading"><span class="dots"><span></span><span></span><span></span></span>슉! 찾는 중...</div></div>
+  <section id="result" class="box" aria-live="polite">
+    <div class="qrow">
+      <h2 id="qTitle"></h2>
+      <button type="button" id="share">공유</button>
+    </div>
+    <div id="notice"></div>
+    <div id="gres">
+      <div class="loading" id="loading"><span class="dots"><span></span><span></span><span></span></span>슉! 찾는 중...</div>
+      <div id="gcse-box"></div>
+    </div>
     <p class="credit">검색 결과 제공: <a href="https://www.google.com" target="_blank" rel="noopener">Google</a></p>
   </section>
-
 </div>
+<div class="toast" id="toast"></div>
 
 <script>
 (function(){
-  var CX = 'a1f300dad56544691';
-  var ENGINES = [
-    {name:'구글',ic:'🔎',url:function(q){return 'https://www.google.com/search?q='+q}},
-    {name:'네이버',ic:'🟢',url:function(q){return 'https://search.naver.com/search.naver?query='+q}},
-    {name:'유튜브',ic:'▶️',url:function(q){return 'https://www.youtube.com/results?search_query='+q}},
-    {name:'다음',ic:'🔵',url:function(q){return 'https://search.daum.net/search?q='+q}},
-    {name:'나무위키',ic:'🌳',url:function(q){return 'https://namu.wiki/Search?q='+q}},
-    {name:'위키백과',ic:'📚',url:function(q){return 'https://ko.wikipedia.org/w/index.php?search='+q}},
-    {name:'이미지',ic:'🖼️',url:function(q){return 'https://www.google.com/search?tbm=isch&q='+q}},
-    {name:'지도',ic:'🗺️',url:function(q){return 'https://map.naver.com/p/search/'+q}}
-  ];
-  var store={
-    get:function(k,d){try{var v=localStorage.getItem(k);return v===null?d:JSON.parse(v)}catch(e){return d}},
-    set:function(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}
-  };
-  var $=function(id){return document.getElementById(id)};
-  var q=$('q'),go=$('go'),clearBtn=$('clear'),qTitle=$('qTitle');
-  
+  // ===== 설정 =====
+  var CX = 'a1f300dad56544691';                        // 구글 검색엔진 ID
+  var LOG_URL = 'https://su-log.gim135587.workers.dev'; // 검색 기록 서버
 
-  // 구글 맞춤 검색: 결과 칸만 쓰고, 검색창은 SU!!! 것을 사용
-  var gReady=false, pending=null, cseLoaded=false, lastStamp=0;
-  window.__gcse={
-    parsetags:'explicit',
-    initializationCallback:function(){
-      google.search.cse.element.render({div:'gcse-box',tag:'searchresults-only',gname:'su'});
-      gReady=true;
-      if(pending){var p=pending;pending=null;runGoogle(p);}
+  var $ = function(id){ return document.getElementById(id); };
+  var q=$('q'), go=$('go'), clearBtn=$('clear'), notice=$('notice');
+  var isWeb = /^https?:$/.test(location.protocol);
+  var inFrame = window.top !== window;   // 관리자 미리보기 안인지
+
+  // 예전 버전이 남긴 검색 기록 정리
+  try{ localStorage.removeItem('su_recent'); }catch(e){}
+
+  // ===== 구글 검색 불러오기 =====
+  var gReady=false, pending=null, cseLoaded=false;
+  window.__gcse = {
+    parsetags: 'explicit',
+    initializationCallback: function(){
+      google.search.cse.element.render({ div:'gcse-box', tag:'searchresults-only', gname:'su' });
+      gReady = true;
+      var l=$('loading'); if(l) l.remove();
+      if(pending){ var p=pending; pending=null; runGoogle(p); }
     }
   };
   function loadCse(){
-    if(cseLoaded) return; cseLoaded=true;
-    var sc=document.createElement('script');
-    sc.async=true; sc.src='https://cse.google.com/cse.js?cx='+CX;
-    sc.onerror=function(){ $('gres').innerHTML='<div class="err">구글 검색을 불러오지 못했어요. 인터넷 연결을 확인하거나 아래 링크로 찾아봐 주세요!</div>'; };
-    document.head.appendChild(sc);
+    if(cseLoaded || !isWeb) return;
+    cseLoaded = true;
+    var s=document.createElement('script');
+    s.async=true; s.src='https://cse.google.com/cse.js?cx='+CX;
+    s.onerror=function(){ showNotice('구글 검색을 불러오지 못했어요. 인터넷 연결을 확인해 주세요.'); };
+    document.head.appendChild(s);
   }
   function runGoogle(text){
-    if(!gReady){pending=text;loadCse();return;}
+    if(!gReady){ pending=text; loadCse(); return; }
     var el=google.search.cse.element.getElement('su');
     if(el) el.execute(text);
   }
 
-  function ensureBox(){
-    if(!$('gcse-box')){ $('gres').innerHTML='<div id="gcse-box"></div>'; }
+  // ===== 기록 저장 =====
+  function logSearch(text){
+    if(!LOG_URL || inFrame) return;
+    var tab = /gsc\.tab=1/.test(location.hash) ? 'image' : 'web';
+    try{
+      fetch(LOG_URL.replace(/\/$/,'')+'/log', {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({q:text, tab:tab}), keepalive:true
+      }).catch(function(){});
+    }catch(e){}
   }
+
+  // ===== 화면 =====
+  function showNotice(html){ notice.innerHTML = html ? '<div class="warn">'+html+'</div>' : ''; }
+  function update(){
+    clearBtn.classList.toggle('show', q.value.length>0);
+    go.disabled = !q.value.trim();
+  }
+  function toast(msg){
+    var t=$('toast'); t.textContent=msg; t.classList.add('show');
+    clearTimeout(toast.timer); toast.timer=setTimeout(function(){ t.classList.remove('show'); },1800);
+  }
+
+  var lastStamp=0;
   function search(text){
-    text=(text||'').trim(); if(!text) return;
+    text=(text||'').trim();
+    if(!text) return;
     q.value=text; update();
-    document.body.classList.add('has-result');
-    qTitle.textContent='“'+text+'”';
-    if(gReady) ensureBox();
-    [].slice.call(document.querySelectorAll('#gres .warn')).forEach(function(n){n.remove()});
-    if(!/^https?:$/.test(location.protocol)){
-      $('gres').innerHTML='<div class="warn">지금 SU!!!를 휴대폰에 저장된 파일로 열었어요. 구글 검색은 <b>도메인 주소(https://...)</b>로 열어야 나와요. 파일을 도메인에 올린 뒤 그 주소로 열어 주세요!</div>';
+    document.body.classList.add('searching');
+    $('qTitle').textContent='“'+text+'”';
+    showNotice('');
+
+    // 주소: ?q=검색어#gsc.tab=0 (탭 정보는 유지)
+    var hash = /^#gsc/.test(location.hash) ? location.hash : '#gsc.tab=0';
+    try{ history.replaceState(null,'','?q='+encodeURIComponent(text)+hash); }catch(e){}
+
+    if(!isWeb){
+      showNotice('지금은 휴대폰에 저장된 파일로 열었어요. 구글 검색은 <b>https://su.ggm.kr</b> 주소로 열어야 나와요.');
+      var l=$('loading'); if(l) l.style.display='none';
       return;
     }
     runGoogle(text);
+    logSearch(text);
+
+    // 7초가 지나도 결과가 없으면 안내
     var stamp=Date.now(); lastStamp=stamp;
     setTimeout(function(){
       if(lastStamp!==stamp) return;
-      var box=$('gres');
-      if(!box.querySelector('.gsc-webResult, .gs-no-results-result, .gsc-result')){
-        var w=document.createElement('div'); w.className='warn';
-        w.innerHTML='결과가 안 보이면 구글 검색엔진의 <b>검색할 사이트</b> 목록이 저장됐는지 확인해 주세요.';
-        box.insertBefore(w, box.firstChild);
+      if(!document.querySelector('#gres .gsc-webResult, #gres .gs-no-results-result, #gres .gsc-result, .gsc-results-wrapper-overlay .gsc-result')){
+        showNotice('결과가 안 보이면 구글 검색엔진의 <b>검색할 사이트</b> 목록이 저장됐는지 확인해 주세요.');
       }
     },7000);
-    try{history.replaceState(null,'','?q='+encodeURIComponent(text)+(location.hash||'#gsc.tab=0'))}catch(e){}
     window.scrollTo({top:0,behavior:'smooth'});
   }
-  function update(){
-    clearBtn.classList.toggle('show',q.value.length>0);
-    go.disabled=!q.value.trim();
-  }
-  // 검색 결과 칸 미리 준비 (첫 검색이 빨라지도록)
-  var holder=document.createElement('div'); holder.id='gcse-box';
-  $('gres').appendChild(holder);
-  window.__gcse.initializationCallback=(function(orig){return function(){ var l=$('loading'); if(l) l.remove(); orig(); };})(window.__gcse.initializationCallback);
 
-  q.addEventListener('input',update);
-  clearBtn.addEventListener('click',function(){q.value='';update();q.focus()});
-  $('f').addEventListener('submit',function(ev){ev.preventDefault();q.blur();search(q.value)});
-  $('logo').addEventListener('click',function(){
-    document.body.classList.remove('has-result');q.value='';update();
-    try{history.replaceState(null,'',location.pathname)}catch(e){}
+  function goHome(){
+    lastStamp=0;
+    document.body.classList.remove('searching');
+    q.value=''; update(); showNotice('');
+    try{ history.replaceState(null,'',location.pathname); }catch(e){}
     q.focus();
-  });
+  }
 
-  function toast(msg){var t=$('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(function(){t.classList.remove('show')},1800);}
+  // ===== 공유 (링크만) =====
   function shareUrl(){
-    var u=location.href;
-    if(location.hash.indexOf('#gsc')!==0) u=location.origin+location.pathname+location.search+'#gsc.tab=0';
-    return u;
+    var hash = /^#gsc/.test(location.hash) ? location.hash : '#gsc.tab=0';
+    return location.origin + location.pathname + location.search + hash;
+  }
+  function copyText(v){
+    var done=function(){ toast('링크를 복사했어요!'); };
+    var fallback=function(){
+      var ta=document.createElement('textarea');
+      ta.value=v; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      try{ document.execCommand('copy'); done(); }catch(e){ toast('주소창의 링크를 복사해 주세요'); }
+      ta.remove();
+    };
+    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(v).then(done,fallback);
+    else fallback();
   }
   $('share').addEventListener('click',function(){
     var url=shareUrl();
-    if(navigator.share){
-      navigator.share({url:url}).catch(function(){});
-      return;
-    }
-    var done=function(){toast('링크를 복사했어요!')};
-    if(navigator.clipboard&&navigator.clipboard.writeText){
-      navigator.clipboard.writeText(url).then(done,function(){fallback(url)});
-    } else fallback(url);
-    function fallback(v){
-      var ta=document.createElement('textarea');ta.value=v;ta.style.position='fixed';ta.style.opacity='0';
-      document.body.appendChild(ta);ta.select();
-      try{document.execCommand('copy');done()}catch(e){toast('복사가 안 됐어요. 주소창 링크를 복사해 주세요')}
-      ta.remove();
-    }
+    if(navigator.share){ navigator.share({url:url}).catch(function(){}); }
+    else copyText(url);
   });
 
-  update();
-  try{localStorage.removeItem('su_recent')}catch(e){}
+  // ===== 이벤트 =====
+  q.addEventListener('input',update);
+  clearBtn.addEventListener('click',function(){ q.value=''; update(); q.focus(); });
+  $('f').addEventListener('submit',function(ev){ ev.preventDefault(); q.blur(); search(q.value); });
+  $('logo').addEventListener('click',goHome);
 
-  // 페이지가 뜬 뒤 구글 검색 도구를 미리 불러와 둠
-  if(/^https?:$/.test(location.protocol) && 'requestIdleCallback' in window) requestIdleCallback(loadCse,{timeout:1500}); else if(/^https?:$/.test(location.protocol)) setTimeout(loadCse,300);
-  // 주소에 ?q=검색어 가 있으면 바로 검색
-  try{var init=new URLSearchParams(location.search).get('q'); if(init) search(init);}catch(e){}
+  // ===== 시작 =====
+  update();
+  if(isWeb){
+    if('requestIdleCallback' in window) requestIdleCallback(loadCse,{timeout:1500});
+    else setTimeout(loadCse,300);
+  }
+  try{
+    var init=new URLSearchParams(location.search).get('q');
+    if(init) search(init);
+  }catch(e){}
 })();
 </script>
 </body>
