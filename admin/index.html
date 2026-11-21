@@ -48,7 +48,6 @@
   .phones{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
   .phone .cap{font-weight:800;font-size:14px;margin:0 0 8px}
   .phone iframe{width:100%;height:clamp(520px,70vh,700px);border:3px solid var(--ink);border-radius:24px;background:#fff;display:block}
-  .phone .open{font-size:13px;margin-top:6px;display:inline-block;color:var(--ink)}
   @media (max-width:520px){
     #pf .btn{flex:1 1 40%}
   }
@@ -86,6 +85,10 @@
   .list .w{flex:1;min-width:0;overflow-wrap:anywhere}
   .list .c{flex:none;opacity:.7;font-size:13px;padding-top:2px}
   .bar{height:6px;background:var(--sun);border-radius:3px;margin-top:4px}
+  .del{flex:none;font:inherit;font-size:13px;font-weight:800;border:2px solid var(--ink);border-radius:999px;background:#fff;color:var(--ink);padding:3px 9px;cursor:pointer;line-height:1.4}
+  .del:hover{background:#ffe1dc}
+  .del.arm{background:var(--pop);color:#fff}
+  .del:disabled{opacity:.5}
   .steps{margin:0;padding-left:20px;line-height:1.8;font-size:15px}
 </style>
 </head>
@@ -111,16 +114,16 @@
       <button type="button" role="tab" data-i="2" aria-selected="false">이미지 결과</button>
     </div>
     <div class="phones">
-      <div class="phone on"><p class="cap">첫 화면</p><iframe id="f0" title="첫 화면"></iframe><a class="open" id="o0" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
-      <div class="phone"><p class="cap">검색 결과 (웹)</p><iframe id="f1" title="웹 결과"></iframe><a class="open" id="o1" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
-      <div class="phone"><p class="cap">검색 결과 (이미지)</p><iframe id="f2" title="이미지 결과"></iframe><a class="open" id="o2" target="_blank" rel="noopener">새 창에서 열기 ↗</a></div>
+      <div class="phone on"><p class="cap">첫 화면</p><iframe id="f0" title="첫 화면"></iframe></div>
+      <div class="phone"><p class="cap">검색 결과 (웹)</p><iframe id="f1" title="웹 결과"></iframe></div>
+      <div class="phone"><p class="cap">검색 결과 (이미지)</p><iframe id="f2" title="이미지 결과"></iframe></div>
     </div>
   </section>
 
   <!-- ② 공유 링크 미리보기 -->
   <section class="box" id="sharecard">
     <h2>② 공유 링크 미리보기</h2>
-    <p class="desc">카카오톡 같은 곳에 SU!!! 링크를 보내면 대략 이런 카드가 떠요. 실제 SU!!! 페이지에 들어 있는 정보를 읽어서 보여 줘요.</p>
+    <p class="desc">메신저에 SU!!! 링크를 보내면 대략 이런 카드가 떠요. 실제 SU!!! 페이지에 들어 있는 정보를 읽어서 보여 줘요.</p>
     <div class="share-grid">
       <div class="chat"><div class="kcard">
         <img id="kimg" alt="공유 이미지">
@@ -130,8 +133,6 @@
       </div></div>
       <div>
         <table class="meta" id="meta"></table>
-        <p class="note">카카오톡은 한 번 본 링크의 카드를 한동안 저장해 둬요. 그림이나 문구를 바꿨는데 예전 카드가 뜨면, 공유 디버거에서 su.ggm.kr을 넣고 캐시를 초기화해 주세요.</p>
-        <div class="row" style="margin:12px 0 0"><a class="btn blue" href="https://developers.kakao.com/tool/debugger/sharing" target="_blank" rel="noopener">카카오 공유 디버거 ↗</a></div>
       </div>
     </div>
   </section>
@@ -139,7 +140,7 @@
   <!-- ③ 검색 기록 -->
   <section class="box" id="stats">
     <h2>③ 사람들이 검색한 기록</h2>
-    <p class="desc">SU!!!에서 검색할 때마다 검색어와 시간이 저장돼요. 누가 검색했는지는 저장하지 않아요.</p>
+    <p class="desc">SU!!!에서 검색할 때마다 검색어와 시간이 저장돼요. 누가 검색했는지는 저장하지 않아요. <b>삭제</b>를 두 번 누르면 지워져요. 인기 검색어에서 지우면 그 검색어 기록이 전부, 최근 검색에서 지우면 그 한 줄만 지워져요.</p>
     <form class="row" id="kf">
       <select id="days" aria-label="기간">
         <option value="1">오늘</option><option value="7" selected>최근 7일</option><option value="30">최근 30일</option><option value="365">최근 1년</option>
@@ -156,7 +157,7 @@
   var $=function(id){return document.getElementById(id)};
   var base=location.origin+'/';
   if(!/^https?:$/.test(location.protocol)){
-    document.querySelector('.wrap').insertAdjacentHTML('afterbegin','<div class="err" style="margin-bottom:18px">지금은 저장된 파일로 열어서 미리보기와 기록이 안 보여요. su.ggm.kr에 올린 뒤 <b>https://su.ggm.kr/admin-74aq8p8xlq.html</b> 주소로 열어 주세요.</div>');
+    document.querySelector('.wrap').insertAdjacentHTML('afterbegin','<div class="err" style="margin-bottom:18px">지금은 저장된 파일로 열어서 미리보기와 기록이 안 보여요. su.ggm.kr에 올린 뒤 <b>https://su.ggm.kr/admin/</b> 주소로 열어 주세요.</div>');
     return;
   }
   function esc(t){return String(t==null?'':t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
@@ -167,7 +168,6 @@
     var e=encodeURIComponent(q);
     urls=[base, base+'?q='+e+'#gsc.tab=0', base+'?q='+e+'#gsc.tab=1'];
     loaded=[false,false,false];
-    urls.forEach(function(u,i){ $('o'+i).href=u; });
     showFrames();
   }
   function narrow(){ return window.matchMedia('(max-width:900px)').matches; }
@@ -231,18 +231,34 @@
           '<div class="cols">'+
             '<div><h3>인기 검색어 · '+label+'</h3><ul class="list">'+
               (d.top.length?d.top.map(function(r,i){
-                return '<li><div class="w">'+(i+1)+'. '+esc(r.q)+'<div class="bar" style="width:'+Math.max(4,Math.round(+r.n/max*100))+'%"></div></div><span class="c">'+esc(r.n)+'번</span></li>';
+                return '<li><div class="w">'+(i+1)+'. '+esc(r.q)+'<div class="bar" style="width:'+Math.max(4,Math.round(+r.n/max*100))+'%"></div></div><span class="c">'+esc(r.n)+'번</span><button type="button" class="del" data-q="'+esc(r.q)+'">삭제</button></li>';
               }).join(''):'<li>아직 기록이 없어요</li>')+
             '</ul></div>'+
             '<div><h3>최근 검색 50개</h3><ul class="list">'+
               (d.recent.length?d.recent.map(function(r){
-                return '<li><span class="w">'+esc(r.q)+(r.tab==='image'?' 🖼️':'')+'</span><span class="c">'+when(r.created_at)+'</span></li>';
+                return '<li><span class="w">'+esc(r.q)+(r.tab==='image'?' 🖼️':'')+'</span><span class="c">'+when(r.created_at)+'</span><button type="button" class="del" data-id="'+esc(r.id)+'">삭제</button></li>';
               }).join(''):'<li>아직 기록이 없어요</li>')+
             '</ul></div>'+
           '</div>';
       })
       .catch(function(){stat.innerHTML='<div class="err">기록 서버에 연결하지 못했어요.</div>'});
   }
+  // 삭제: 한 번 누르면 "정말?", 한 번 더 누르면 삭제
+  $('stat').addEventListener('click',function(ev){
+    var b=ev.target.closest('.del'); if(!b) return;
+    if(!b.classList.contains('arm')){
+      [].forEach.call(document.querySelectorAll('.del.arm'),function(x){x.classList.remove('arm');x.textContent='삭제'});
+      b.classList.add('arm'); b.textContent='정말?';
+      clearTimeout(b._t); b._t=setTimeout(function(){b.classList.remove('arm');b.textContent='삭제'},3000);
+      return;
+    }
+    b.disabled=true; b.textContent='...';
+    var body=b.dataset.id?{id:+b.dataset.id}:{q:b.dataset.q};
+    fetch(LOG_URL.replace(/\/$/,'')+'/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)})
+      .then(function(r){return r.json()})
+      .then(function(j){ if(!j.ok) throw new Error(j.error); loadStats(); })
+      .catch(function(){ b.disabled=false; b.classList.remove('arm'); b.textContent='실패'; });
+  });
   $('kf').addEventListener('submit',function(ev){ev.preventDefault();loadStats()});
   $('days').addEventListener('change',loadStats);
   loadStats();
